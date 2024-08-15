@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003771292224",
+    "project_id": "asaapp-603d0",
+    "storage_bucket": "asaapp-603d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003771292224:android:9ae305634f44698a984da5",
+        "android_client_info": {
+          "package_name": "asa.app.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASOtTJeCGdZ-fXkLqbhZldelnPxOWbETc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
