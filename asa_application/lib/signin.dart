@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'signup.dart';
 import 'homepage.dart';
+import 'app_colors.dart';
 
 class SignInPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -55,7 +56,10 @@ class SignInPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blueGrey, Colors.black],
+            colors: [
+              AppColors.accent,
+              AppColors.black
+            ],
           ),
         ),
         child: Padding(
