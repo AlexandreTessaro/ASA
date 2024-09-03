@@ -19,6 +19,7 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
   final _enderecoController = TextEditingController();
   final _numeroPessoasResidenciaController = TextEditingController();
   final List<Item> _itensDoacao = [];
+  String? _selectedDonorId;
 
   void _addItem() {
     setState(() {
@@ -30,6 +31,21 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
     setState(() {
       _itensDoacao.removeAt(index);
     });
+  }
+
+  void _loadDonorData(String donorId) async {
+    final donorSnapshot = await FirebaseFirestore.instance.collection('donors').doc(donorId).get();
+    final donorData = donorSnapshot.data();
+    if (donorData != null) {
+      setState(() {
+        _beneficiarioController.text = donorData['name'] ?? '';
+        _cpfController.text = donorData['cpf'] ?? '';
+        _rgController.text = donorData['rg'] ?? '';
+        _telefoneController.text = donorData['phone'] ?? '';
+        _enderecoController.text = donorData['address'] ?? '';
+        _numeroPessoasResidenciaController.text = donorData['numberPersonHouse'] ?? '';
+      });
+    }
   }
 
   void _registerDonation() async {
@@ -62,6 +78,7 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
           _formKey.currentState!.reset();
           setState(() {
             _itensDoacao.clear();
+            _selectedDonorId = null;
           });
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao registrar doação: $error')));
@@ -107,6 +124,53 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('donors')
+                      .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return DropdownButtonFormField<String>(
+                      value: _selectedDonorId,
+                      hint: const Text('Selecione um Doador'),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedDonorId = value;
+                          if (value != null) {
+                            _loadDonorData(value);
+                          }
+                        });
+                      },
+                      items: snapshot.data!.docs.map((doc) {
+                        return DropdownMenuItem<String>(
+                          value: doc.id,
+                          child: Text(doc.get('name')),
+                        );
+                      }).toList(),
+                      decoration: const InputDecoration(
+                        labelText: 'Doador',
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, selecione um doador';
+                        }
+                        return null;
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _localController,
                   decoration: const InputDecoration(

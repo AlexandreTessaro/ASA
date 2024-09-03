@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'donor_detail_page.dart';
 
 class ViewDonorPage extends StatelessWidget {
@@ -7,6 +8,12 @@ class ViewDonorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Center(child: Text('Usuário não autenticado'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visualizar Doadores'),
@@ -23,7 +30,10 @@ class ViewDonorPage extends StatelessWidget {
           ),
         ),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('donors').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('donors')
+              .where('userId', isEqualTo: user.uid)  // Filter by current user's ID
+              .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());

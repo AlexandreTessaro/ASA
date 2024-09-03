@@ -38,7 +38,7 @@ class RegisterDonorPageState extends State<RegisterDonorPage> {
           name: _nameController.text,
           email: _emailController.text,
           phone: _phoneController.text,
-          userId: user.uid,
+          userId: user.uid,  // Store the userId
           cpf: _cpfController.text,
           rg: _rgController.text,
           birth: _birthController.text,
@@ -49,14 +49,14 @@ class RegisterDonorPageState extends State<RegisterDonorPage> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Donor registered successfully')),
+            const SnackBar(content: Text('Doador registrado com sucesso')),
           );
         }
         _formKey.currentState!.reset();
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error registering donor: $e')),
+            SnackBar(content: Text('Erro ao registrar doador: $e')),
           );
         }
       }
