@@ -156,6 +156,7 @@ class HomePageState extends State<HomePage> {
                 },
                 child: const Text('Visualizar Doadores'),
               ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(

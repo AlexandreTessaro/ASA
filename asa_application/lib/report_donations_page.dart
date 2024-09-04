@@ -58,13 +58,13 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
             pw.Header(
                 level: 0,
                 child: pw.Text('Relatório de Doações',
-                    style: pw.TextStyle(fontSize: 24))),
+                    style: const pw.TextStyle(fontSize: 24))),
             pw.Text(
                 'Período: ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
-                style: pw.TextStyle(fontSize: 16)),
+                style: const pw.TextStyle(fontSize: 16)),
             if (_selectedDonorId != null)
               pw.Text('Doador: $_selectedDonorId',
-                  style: pw.TextStyle(fontSize: 16)),
+                  style: const pw.TextStyle(fontSize: 16)),
             pw.SizedBox(height: 20),
             pw.TableHelper.fromTextArray(
               headers: [

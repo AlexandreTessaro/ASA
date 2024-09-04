@@ -62,11 +62,11 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
         _formKey.currentState!.save();
         final donation = Donation(
           local: _localController.text,
-          data: DateTime.now(),
+          data: DateTime.now(),  // Ensure date is captured
           beneficiario: _beneficiarioController.text,
           cpf: _cpfController.text,
           rg: _rgController.text,
-          nascimento: DateTime.now(),
+          nascimento: DateTime.now(), // Assuming this represents the donation date
           telefone: _telefoneController.text,
           endereco: _enderecoController.text,
           numeroPessoasResidencia: int.parse(_numeroPessoasResidenciaController.text),
@@ -481,7 +481,7 @@ class Donation {
   Map<String, dynamic> toMap() {
     return {
       'local': local,
-      'data': data,
+      'data': data,  // Ensure the date is captured in the Firestore document
       'beneficiario': beneficiario,
       'cpf': cpf,
       'rg': rg,
