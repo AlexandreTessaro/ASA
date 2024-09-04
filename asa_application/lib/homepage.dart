@@ -5,7 +5,8 @@ import 'overview_donate.dart';
 import 'signin.dart';
 import 'view_donate.dart';
 import 'register_donor.dart';
-import 'view_donor_page.dart'; // Import the new ViewDonorPage
+import 'view_donor_page.dart'; 
+import 'report_donations_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -154,6 +155,20 @@ class HomePageState extends State<HomePage> {
                   );
                 },
                 child: const Text('Visualizar Doadores'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ReportDonationsPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[800],
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                child: const Text('Gerar Relatório de Doações'),
               ),
             ],
           ),
