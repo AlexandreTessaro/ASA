@@ -108,6 +108,13 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
         elevation: 0,
       ),
       body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blueGrey, Colors.black], // You can change these colors as needed
+          ),
+        ),
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
@@ -182,7 +189,7 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
                         borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black),
                   );
                 },
               ),
