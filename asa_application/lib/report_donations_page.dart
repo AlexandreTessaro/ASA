@@ -15,20 +15,26 @@ class ReportDonationsPage extends StatefulWidget {
 class ReportDonationsPageState extends State<ReportDonationsPage> {
   final _formKey = GlobalKey<FormState>();
   DateTimeRange? _selectedDateRange;
-  String? _selectedDonorId;
+  String? _selectedDonorName;
 
-  void _generateReport() async {
+  Future<void> _generateReport() async {
     if (_formKey.currentState!.validate()) {
       Query query = FirebaseFirestore.instance.collection('donations');
 
-      if (_selectedDonorId != null) {
-        query = query.where('beneficiario', isEqualTo: _selectedDonorId);
+      // Apply donor filter by name (use 'beneficiario' field)
+      if (_selectedDonorName != null && _selectedDonorName!.isNotEmpty) {
+        query = query.where('beneficiario', isEqualTo: _selectedDonorName); // Match by 'beneficiario'
       }
 
+      // Apply date range filter if selected
       if (_selectedDateRange != null) {
+        // Extend the end date to cover the entire day until 23:59:59
+        DateTime startDate = _selectedDateRange!.start;
+        DateTime endDate = _selectedDateRange!.end.add(const Duration(hours: 23, minutes: 59, seconds: 59));
+
         query = query
-            .where('data', isGreaterThanOrEqualTo: _selectedDateRange!.start)
-            .where('data', isLessThanOrEqualTo: _selectedDateRange!.end);
+            .where('data', isGreaterThanOrEqualTo: startDate)
+            .where('data', isLessThanOrEqualTo: endDate);
       }
 
       QuerySnapshot snapshot = await query.get();
@@ -36,9 +42,7 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
       if (snapshot.docs.isEmpty) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content:
-                  Text('Nenhuma doação encontrada para os filtros aplicados.')),
+          const SnackBar(content: Text('Nenhuma doação encontrada para os filtros aplicados.')),
         );
       } else {
         _generatePDF(snapshot.docs);
@@ -46,7 +50,7 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
     }
   }
 
-  void _generatePDF(List<QueryDocumentSnapshot> donations) async {
+  Future<void> _generatePDF(List<QueryDocumentSnapshot> donations) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -56,36 +60,33 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
         build: (context) {
           return [
             pw.Header(
-                level: 0,
-                child: pw.Text('Relatório de Doações',
-                    style: const pw.TextStyle(fontSize: 24))),
-            pw.Text(
+              level: 0,
+              child: pw.Text('Relatório de Doações', style: const pw.TextStyle(fontSize: 24)),
+            ),
+            if (_selectedDateRange != null)
+              pw.Text(
                 'Período: ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
-                style: const pw.TextStyle(fontSize: 16)),
-            if (_selectedDonorId != null)
-              pw.Text('Doador: $_selectedDonorId',
-                  style: const pw.TextStyle(fontSize: 16)),
+                style: const pw.TextStyle(fontSize: 16),
+              ),
+            if (_selectedDonorName != null && _selectedDonorName!.isNotEmpty)
+              pw.Text('Doador: $_selectedDonorName', style: const pw.TextStyle(fontSize: 16)),
             pw.SizedBox(height: 20),
             pw.TableHelper.fromTextArray(
-              headers: [
-                'Data',
-                'Beneficiário',
-                'Local',
-                'Itens Doação',
-                'Total de Itens'
-              ],
+              headers: ['Data', 'Beneficiário', 'Local', 'Itens Doação', 'Total de Itens'],
               data: donations.map((doc) {
                 final data = doc.data() as Map<String, dynamic>;
-                final items = (data['itensDoacao'] as List<dynamic>)
-                    .map((item) => item['descricao'])
-                    .join(', ');
-                final totalItems = data['itensDoacao'].length.toString();
+                final items = (data['itensDoacao'] as List<dynamic>?)
+                    ?.map((item) => item['descricao'] ?? 'Não informado')
+                    .join(', ') ?? 'Não informado';
+                final totalItems = data['itensDoacao'] != null
+                    ? data['itensDoacao'].length.toString()
+                    : '0';
                 return [
-                  DateFormat('dd/MM/yyyy').format(data['data'].toDate()),
+                  DateFormat('dd/MM/yyyy').format((data['data'] as Timestamp?)?.toDate() ?? DateTime.now()),
                   data['beneficiario'] ?? 'Não informado',
                   data['local'] ?? 'Não informado',
                   items,
-                  totalItems
+                  totalItems,
                 ];
               }).toList(),
             ),
@@ -94,9 +95,7 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
       ),
     );
 
-    // Show PDF preview and allow user to download
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save());
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
   }
 
   @override
@@ -112,7 +111,7 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blueGrey, Colors.black], // You can change these colors as needed
+            colors: [Colors.blueGrey, Colors.black],
           ),
         ),
         padding: const EdgeInsets.all(16),
@@ -159,24 +158,23 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
               const SizedBox(height: 20),
               // Donor Selector Dropdown
               StreamBuilder<QuerySnapshot>(
-                stream:
-                    FirebaseFirestore.instance.collection('donors').snapshots(),
+                stream: FirebaseFirestore.instance.collection('donors').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const CircularProgressIndicator();
                   }
                   final donors = snapshot.data!.docs;
                   return DropdownButtonFormField<String>(
-                    value: _selectedDonorId,
+                    value: _selectedDonorName,
                     items: donors.map((doc) {
-                      return DropdownMenuItem(
-                        value: doc.id,
-                        child: Text(doc['name']),
+                      return DropdownMenuItem<String>(  // Explicitly declare type String
+                        value: doc['name'] as String,  // Ensure it is cast to String
+                        child: Text(doc['name'] as String),
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedDonorId = value;
+                        _selectedDonorName = value;
                       });
                     },
                     decoration: const InputDecoration(

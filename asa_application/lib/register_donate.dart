@@ -52,9 +52,11 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
     if (_formKey.currentState!.validate()) {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuário não autenticado')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuário não autenticado')),
+          );
+        }
         return;
       }
 
@@ -62,29 +64,31 @@ class RegisterDonatePageState extends State<RegisterDonatePage> {
         _formKey.currentState!.save();
         final donation = Donation(
           local: _localController.text,
-          data: DateTime.now(),  // Ensure date is captured
+          data: DateTime.now(),
           beneficiario: _beneficiarioController.text,
           cpf: _cpfController.text,
           rg: _rgController.text,
-          nascimento: DateTime.now(), // Assuming this represents the donation date
+          nascimento: DateTime.now(),
           telefone: _telefoneController.text,
           endereco: _enderecoController.text,
           numeroPessoasResidencia: int.parse(_numeroPessoasResidenciaController.text),
           itensDoacao: _itensDoacao,
           userId: user.uid,
         );
-        FirebaseFirestore.instance.collection('donations').add(donation.toMap()).then((_) {
+        await FirebaseFirestore.instance.collection('donations').add(donation.toMap());
+        
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Doação registrada com sucesso')));
           _formKey.currentState!.reset();
           setState(() {
             _itensDoacao.clear();
             _selectedDonorId = null;
           });
-        }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao registrar doação: $error')));
-        });
+        }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao registrar doação: $e')));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao registrar doação: $e')));
+        }
       }
     }
   }
