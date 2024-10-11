@@ -9,6 +9,7 @@ class ReportDonationsPage extends StatefulWidget {
   const ReportDonationsPage({super.key});
 
   @override
+  
   ReportDonationsPageState createState() => ReportDonationsPageState();
 }
 
@@ -21,14 +22,11 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
     if (_formKey.currentState!.validate()) {
       Query query = FirebaseFirestore.instance.collection('donations');
 
-      // Apply donor filter by name (use 'beneficiario' field)
       if (_selectedDonorName != null && _selectedDonorName!.isNotEmpty) {
-        query = query.where('beneficiario', isEqualTo: _selectedDonorName); // Match by 'beneficiario'
+        query = query.where('beneficiario', isEqualTo: _selectedDonorName); 
       }
 
-      // Apply date range filter if selected
       if (_selectedDateRange != null) {
-        // Extend the end date to cover the entire day until 23:59:59
         DateTime startDate = _selectedDateRange!.start;
         DateTime endDate = _selectedDateRange!.end.add(const Duration(hours: 23, minutes: 59, seconds: 59));
 
@@ -167,8 +165,8 @@ class ReportDonationsPageState extends State<ReportDonationsPage> {
                   return DropdownButtonFormField<String>(
                     value: _selectedDonorName,
                     items: donors.map((doc) {
-                      return DropdownMenuItem<String>(  // Explicitly declare type String
-                        value: doc['name'] as String,  // Ensure it is cast to String
+                      return DropdownMenuItem<String>(  
+                        value: doc['name'] as String,  
                         child: Text(doc['name'] as String),
                       );
                     }).toList(),
