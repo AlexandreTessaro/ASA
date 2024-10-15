@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'homepage.dart';
 import 'app_colors.dart';
+import 'signin.dart'; // Importar a tela de login
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -140,7 +141,7 @@ class SignUpPageState extends State<SignUpPage> {
                             prefixIcon: Icon(Icons.email, color: Colors.grey),
                             labelStyle: TextStyle(color: Colors.grey),
                           ),
-                          style: const TextStyle(color: Colors.grey), // Ajuste da cor do texto
+                          style: const TextStyle(color: Colors.grey),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -166,7 +167,7 @@ class SignUpPageState extends State<SignUpPage> {
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
                             labelStyle: TextStyle(color: Colors.grey),
                           ),
-                          style: const TextStyle(color: Colors.grey), // Ajuste da cor do texto
+                          style: const TextStyle(color: Colors.grey),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Por favor insira uma senha';
@@ -193,7 +194,7 @@ class SignUpPageState extends State<SignUpPage> {
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
                             labelStyle: TextStyle(color: Colors.grey),
                           ),
-                          style: const TextStyle(color: Colors.grey), // Ajuste da cor do texto
+                          style: const TextStyle(color: Colors.grey),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Por favor confirme a sua senha';
@@ -214,8 +215,10 @@ class SignUpPageState extends State<SignUpPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               minimumSize: const Size(double.infinity, 50),
+                              elevation: 10,
+                              shadowColor: Colors.black.withOpacity(1),
                             ),
-                            child: const Text('Registre-se'),
+                            child: const Text('Registre-se', style: TextStyle(fontSize: 18)),
                           ),
                         const SizedBox(height: 20),
                         if (_errorMessage.isNotEmpty)
@@ -227,6 +230,19 @@ class SignUpPageState extends State<SignUpPage> {
                               textAlign: TextAlign.center,
                             ),
                           ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>  SignInPage()),
+                            );
+                          },
+                          child: const Text(
+                            'Já tem conta? Conecte-se',
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
+                        ),
                       ],
                     ),
                   ),

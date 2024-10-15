@@ -141,10 +141,12 @@ class SignInPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           minimumSize: const Size(double.infinity, 50),
+                          elevation: 10, 
+                          shadowColor: Colors.black.withOpacity(1), 
                         ),
                         child: const Text('Conecte-se', style: TextStyle(fontSize: 18)),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 30),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
