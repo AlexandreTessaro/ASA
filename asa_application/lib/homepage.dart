@@ -5,7 +5,7 @@ import 'overview_donate.dart';
 import 'signin.dart';
 import 'view_donate.dart';
 import 'register_donor.dart';
-import 'view_donor_page.dart'; 
+import 'view_donor_page.dart';
 import 'report_donations_page.dart';
 import 'app_colors.dart';  // Importa a paleta de cores usada no login
 
@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
 
@@ -27,13 +29,60 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const RegisterDonatePage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ViewDonatePage()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const OverviewDonatePage()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const RegisterDonorPage()),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ViewDonorPage()),
+        );
+        break;
+      case 5:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ReportDonationsPage()),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('Homepage'),
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.text,
         elevation: 0,
       ),
       drawer: Drawer(
@@ -50,7 +99,7 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               decoration: const BoxDecoration(
-                color: Colors.blueGrey,
+                color: AppColors.accent,
               ),
             ),
             ListTile(
@@ -68,172 +117,54 @@ class HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double maxWidth = constraints.maxWidth > 400 ? 400 : constraints.maxWidth * 0.9;
-
-          return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.accent, // Utilizando as mesmas cores da tela de login
-                  AppColors.primaryDark,
-                ],
-              ),
+      body: Container(
+        color: AppColors.primaryDark, // Replaced gradient with solid color
+        child: Center(
+          child: Text(
+            'Escolha uma opção abaixo',
+            style: TextStyle(
+              color: AppColors.secondary,
+              fontSize: isMobile ? 20 : 28,  // Responsive font size
             ),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: maxWidth,
-                  decoration: BoxDecoration(
-                    color: AppColors.card, // Mantendo a consistência do tema
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        'Olá, o que deseja fazer?',
-                        style: TextStyle(fontSize: 24, color: Colors.white),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const RegisterDonatePage()),
-                          );
-                        },
-                        child: const Text('Cadastrar Doações'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ViewDonatePage()),
-                          );
-                        },
-                        child: const Text('Visualizar Doações'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const OverviewDonatePage()),
-                          );
-                        },
-                        child: const Text('Visão Geral das Doações'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const RegisterDonorPage()),
-                          );
-                        },
-                        child: const Text('Registrar Doador'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ViewDonorPage()),
-                          );
-                        },
-                        child: const Text('Visualizar Doadores'),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.5),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ReportDonationsPage()),
-                          );
-                        },
-                        child: const Text('Gerar Relatório de Doações'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // Ensures background color is applied
+        backgroundColor: AppColors.accent,
+        unselectedItemColor: AppColors.text,
+        selectedItemColor: AppColors.primary,
+        iconSize: isMobile ? 24 : 30,  // Adjust icon size based on screen width
+        selectedFontSize: isMobile ? 14 : 16,
+        unselectedFontSize: isMobile ? 12 : 14,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Cadastrar Doações',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_list),
+            label: 'Visualizar Doações',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.pie_chart),
+            label: 'Visão Geral',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_add),
+            label: 'Registrar Doador',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Visualizar Doadores',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'Relatório',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

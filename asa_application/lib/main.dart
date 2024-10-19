@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: FirebaseAuth.instance.currentUser == null ? SignInPage() : const HomePage(),
-      routes: {
+      routes: { 
         '/signin': (context) => SignInPage(),
         '/signup': (context) => const SignUpPage(),
         '/homepage': (context) => const HomePage(),

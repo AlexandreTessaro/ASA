@@ -85,16 +85,7 @@ class SignUpPageState extends State<SignUpPage> {
           double maxWidth = constraints.maxWidth > 400 ? 400 : constraints.maxWidth * 0.9;
 
           return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.accent,
-                  AppColors.primaryDark,
-                ],
-              ),
-            ),
+            color: AppColors.primaryDark, // Replaced gradient with solid color
             child: Center(
               child: SingleChildScrollView(
                 child: Container(
@@ -235,7 +226,7 @@ class SignUpPageState extends State<SignUpPage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) =>  SignInPage()),
+                              MaterialPageRoute(builder: (context) => SignInPage()),
                             );
                           },
                           child: const Text(

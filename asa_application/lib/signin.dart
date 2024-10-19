@@ -56,29 +56,20 @@ class SignInPage extends StatelessWidget {
           double maxWidth = constraints.maxWidth > 400 ? 400 : constraints.maxWidth * 0.9;
 
           return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.accent,
-                  AppColors.primaryDark,
-                ],
-              ),
-            ),
+            color: AppColors.primaryDark, // Replaced gradient with solid color
             child: Center(
               child: SingleChildScrollView(
                 child: Container(
                   width: maxWidth,
                   decoration: BoxDecoration(
-                    color: AppColors.card, 
-                    borderRadius: BorderRadius.circular(20), 
+                    color: AppColors.card,
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5), 
-                        spreadRadius: 5, 
-                        blurRadius: 15,  
-                        offset: const Offset(0, 5),  
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),
@@ -110,12 +101,14 @@ class SignInPage extends StatelessWidget {
                           prefixIcon: const Icon(Icons.email, color: AppColors.button),
                           labelStyle: const TextStyle(color: Colors.grey),
                         ),
-                        style: const TextStyle(color: Colors.grey), 
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(height: 20),
                       TextField(
                         controller: passwordController,
                         obscureText: true,
+                        onSubmitted: (value) => _login(context),
+                        textInputAction: TextInputAction.done,
                         decoration: InputDecoration(
                           labelText: 'Senha',
                           enabledBorder: OutlineInputBorder(
@@ -129,7 +122,7 @@ class SignInPage extends StatelessWidget {
                           prefixIcon: const Icon(Icons.lock, color: AppColors.button),
                           labelStyle: const TextStyle(color: Colors.grey),
                         ),
-                        style: const TextStyle(color: Colors.grey), 
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(height: 40),
                       ElevatedButton(
@@ -141,8 +134,8 @@ class SignInPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           minimumSize: const Size(double.infinity, 50),
-                          elevation: 10, 
-                          shadowColor: Colors.black.withOpacity(1), 
+                          elevation: 10,
+                          shadowColor: Colors.black.withOpacity(1),
                         ),
                         child: const Text('Conecte-se', style: TextStyle(fontSize: 18)),
                       ),
